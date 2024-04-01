@@ -1,7 +1,7 @@
 import spacy
 import nltk
 import os
-nltk.download('punkt')
+import re
 
 # Load Portuguese language model
 nlp = spacy.load("pt_core_news_lg")
@@ -20,12 +20,20 @@ sentilex = {}
 with open('SentiLex-lem-PT02.txt', 'r') as file:
     for line in file:
         fields = line.strip().split(';')
-        if len(fields) == 5:
-            sentilex[fields[0].split('.')[0]] = (fields[2], fields[3])
-        elif len(fields) == 4:
-            sentilex[fields[0].split('.')[0]] = fields[2]
+        if len(fields) >= 4:
+            word = fields[0].split('.')[0]
+            polarities = [field.split('=')[1] for field in fields if field.startswith('POL')]
+            if len(polarities) == 1:
+                sentilex[word] = int(polarities[0])
+            elif len(polarities) == 2:
+                sentilex[word] = tuple(map(int, polarities))
+
 
 def preprocess_text(text):
+    if isinstance(text, list):  # Verifica se text é uma lista
+        # Se for uma lista, junte os elementos em uma única string
+        text = ' '.join(text)
+
     # Lowercase the text
     text = text.lower()
 
@@ -72,18 +80,18 @@ def calculate_sentiment(lemmas):
     for lemma in lemmas:
         
         if lemma[0] in sentilex:
-            
+            #print(lemma[0], "XXXXXXX")
             #print(sentilex[lemma[0]])
             #Se tem 1 ou 2 polaridades(N0 e N1)
             if type(sentilex[lemma[0]]) == tuple:
                 if lemma[1] == 'obj' or lemma[1] == "dobj":
                     #print("v1",sentilex[lemma[0]][1].split('=')[1])
-                    polarity = int(sentilex[lemma[0]][1].split('=')[1])
+                    polarity = int(sentilex[lemma[0]][1])
                 else:
                     #print("v3",sentilex[lemma[0]][0].split('=')[1])
-                    polarity = int(sentilex[lemma[0]][0].split('=')[1])
+                    polarity = int(sentilex[lemma[0]][0])
             else:
-                polarity = int(sentilex[lemma[0]].split('=')[1])
+                polarity = int(sentilex[lemma[0]])
                 #print("v4",sentilex[lemma[0]].split('=')[1])
             
             # Aplica o multiplicador à polaridade
@@ -127,12 +135,55 @@ def calculate_sentiment(lemmas):
 
 
 def divideTexto(text):
-    sentences = nltk.sent_tokenize(text)
+    # Usando expressão regular para separar o texto em frases
+    sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<![A-Z]\.)(?<=\.|\?|\!)\s', text)
     return sentences
 
 
-def main():
-    textoFinal = ""
+def dividir_por_capitulos(texto):
+    capitulos = []
+    capitulo_atual = None
+    
+    for linha in texto.split('\n'):
+        if linha.startswith('#'):
+            if capitulo_atual:
+                capitulos.append(capitulo_atual)
+            capitulo_atual = linha + '\n'
+        elif capitulo_atual is not None:
+            if not capitulo_atual.endswith('\n'):
+                capitulo_atual += '\n'
+            capitulo_atual += linha + '\n'
+    
+    if capitulo_atual:
+        capitulos.append(capitulo_atual)
+    
+    return [capitulo.split('\n', 1)[1] for capitulo in capitulos]
+
+def HarryPotter():
+    # Lista de textos de cada capítulo
+    capitulos = []
+    
+    # Leitura do arquivo e divisão por capítulos
+    with open('HP.txt', 'r', encoding='utf-8') as arquivo:
+        texto = arquivo.read()
+    
+    textoCapitulos = dividir_por_capitulos(texto)
+    
+    # Cálculo do sentimento para cada capítulo
+    sentimentoGlobal = 0
+    for i, capitulo in enumerate(textoCapitulos, start=1):
+        textoDividido = divideTexto(capitulo)
+        lemmas = preprocess_text(textoDividido)
+
+        sentimento_capitulo = calculate_sentiment(lemmas)
+        print(f"Sentimento do Capítulo {i}: {sentimento_capitulo}")
+        sentimentoGlobal += sentimento_capitulo
+    
+    # Exibição do sentimento global
+    print(f"Sentimento Global: {sentimentoGlobal}")
+
+
+def textoExemplo():
     text = """Que dia maravilhoso! O sol está brilhando, o céu está azul e estou rodeado de pessoas queridas. 
         Sinto-me extremamente feliz e grato por tudo o que tenho e correr a toque de caixa LOL. 
         Este é o tipo de dia que me faz acreditar no poder da felicidade e na beleza da vida e doido varrido e."""
@@ -147,7 +198,10 @@ def main():
         textoFinal += textoFrase
 
     print(sentimentoGlobal)
-    print(textoFinal)
+
+def main():
+    #textoExemplo()
+    HarryPotter()
 
 if __name__ == "__main__":
     main()
