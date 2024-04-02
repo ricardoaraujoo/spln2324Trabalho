@@ -72,7 +72,6 @@ def preprocess_text(text):
 
     lemmatized_textSplit = lemmatized_text.split()
     # Check for each key in the sentilex dictionary in the lemmatized text
-    print("Lemmas_deps:\n", lemmas_deps )
     # print("\n\nLemmatized_textSplit:\n", lemmatized_textSplit)
     len_lemmas = len(lemmas_deps)
     substitutes = {}
@@ -237,7 +236,6 @@ def HarryPotter():
             textoFinal += f"{texto}\n"
         print(f"\nCapítulo {i}  {sentimentoInterno}\n")
         sentimento_por_capitulo.append(sentimentoInterno)
-    # Exibição do sentimento global
         sentimentoGlobal += sentimentoInterno
 
         
