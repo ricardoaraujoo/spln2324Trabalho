@@ -6,6 +6,7 @@ import re
 
 # Load Portuguese language model
 nlp = spacy.load("pt_core_news_lg")
+max_key_length = 8
 
 boosters = {}
 for boost in open('booster.txt','r', encoding='utf-8'):
@@ -31,6 +32,7 @@ with open('SentiLex-lem-PT02_copy.txt', 'r', encoding='utf-8') as file:
 
 
 def preprocess_text(text):
+    global max_key_length
     if isinstance(text, list):  # Verifica se text é uma lista
         # Se for uma lista, junte os elementos em uma única string
         text = ' '.join(text)
@@ -47,44 +49,48 @@ def preprocess_text(text):
 
     lemmas_deps = []
     lemmatized_text = ''
-
+    print("DOC:", doc)
     for token in doc:
         if not (token.is_punct or token.is_space):
             lemma = token.lemma_.lower()
             dep = token.dep_
             lemmas_deps.append((lemma, dep))
             lemmatized_text += lemma + ' '
+
     lemmatized_textSplit = lemmatized_text.split()
     # Check for each key in the sentilex dictionary in the lemmatized text
-    print("Lemmas_deps:", lemmas_deps )
-    print("\n\nLemmatized_textSplit:", lemmatized_textSplit)
+    print("Lemmas_deps:\n", lemmas_deps )
+    print("\n\nLemmatized_textSplit:\n", lemmatized_textSplit)
     len_lemmas = len(lemmas_deps)
-    for key in sentilex:
-        key_lemmas = key.split()
-        key_length = len(key_lemmas)
-
-        found = False
-        for i in range(len_lemmas - key_length + 1):
-            for j in range(key_length, 0, -1):
-                lemmas_slice = ' '.join(lemma for lemma, _ in lemmas_deps[i:i+j])
-                if lemmas_slice == key:
-                    found = True
-                    index = i
-                    break
+    substitutes = {}
+    found = False
+    for i in range(len_lemmas):
+        for j in range(min(len_lemmas - i, max_key_length), 1, -1):
+            lemmas_slice = ' '.join(lemma for lemma, _ in lemmas_deps[i:i+j])
+            #print("Lemmas_slice:", lemmas_slice)
+            #print("i:", i, "j:", j)
+            if lemmas_slice in sentilex: 
+                #print("Lemmas_slice Aceitada:", lemmas_slice)
+                found = True
+                index = i
+                break
 
         if found:
+            substitutes[lemmas_slice] = (index)
+            lemmas_deps[index] = (lemmas_slice, lemmas_deps[index][1])
+            found = False
             # Replace the lemma with the key
-            print("Key lemmas:", key_lemmas)
-            print("Index:", index)
-            lemmas_deps[index] = (key, lemmas_deps[index][1])
-            
-            #print("key LENGTH:", len(key_lemmas
-            # Remove the next n-1 lemmas, where n is the number of words in the key
-            #print("Lemmas_deps:", lemmas_deps)
-            #print("Lemmas_deps length:", len(lemmas_deps))
-            for i in range(len(key_lemmas) - 1, 0, -1):
-                if index + i < len(lemmas_deps):
-                    del lemmas_deps[index + i]
+    
+    for lemmas_slice, index in substitutes.items():
+        print("Index:", index,"Lemmas_slice ACEITADA DELETE:", lemmas_slice)
+
+        lemmas_length = len(lemmas_slice.split())
+        # Remove the next n-1 lemmas, where n is the number of words in the key
+        #print("Lemmas_deps:", lemmas_deps)
+        #print("Lemmas_deps length:", len(lemmas_deps))
+        for i in range(lemmas_length - 1, 0, -1):
+            if index + i < len(lemmas_deps):
+                del lemmas_deps[index + i]
 
     #print(lemmas_deps)
 
@@ -125,8 +131,12 @@ def calculate_sentiment(lemmas):
             
         elif lemma[0] in boosters:
             if multiplier == -1:
-                multiplier = 1
-                texto += f"<boosters>{lemma[0]}</boosters> "
+                if boosters[lemma[0]] == 'INCR':
+                    multiplier = -1.3
+                    texto += f"<boostersINCR>{lemma[0]}</boostersINCR> "
+                else:
+                    multiplier = -0.7
+                    texto += f"<boostersDECR>{lemma[0]}</boostersDECR> "
             else: 
                 if boosters[lemma[0]] == 'INCR':
                     multiplier = 1.3
@@ -176,7 +186,6 @@ def dividir_por_capitulos(texto):
     return [capitulo.split('\n', 1)[1] for capitulo in capitulos]
 
 def HarryPotter():
-
     # Leitura do arquivo e divisão por capítulos
     with open('HP.txt', 'r', encoding='utf-8') as arquivo:
         texto = arquivo.read()
@@ -198,8 +207,9 @@ def HarryPotter():
     print("Texto global:", texto)
 
 def textoExemplo():
-    text = """Hagrid encostou-se à mesa.
-           Desceram uma ravina subterrânea e Harry encostou-se a um dos lados para tentar ver o que havia lá em baixo na escuridão do fundo"""
+    text = """Que dia maravilhoso! O sol está brilhando, o céu está azul e estou rodeado de pessoas queridas. 
+        Sinto-me extremamente feliz e grato por tudo o que tenho e correr a toque de caixa LOL. 
+        Este é o tipo de dia que me faz acreditar no poder da felicidade e na beleza da vida e doido varrido elea."""
     
     textoFinal = "" 
     sentimentoGlobal = 0
