@@ -1,4 +1,5 @@
 from telnetlib import PRAGMA_HEARTBEAT
+from joblib import PrintTime
 from numpy import double
 import spacy
 import nltk
@@ -8,6 +9,14 @@ import re
 # Load Portuguese language model
 nlp = spacy.load("pt_core_news_lg")
 max_key_length = 8
+repeticoes = {}
+repeticoes['pos'] = 0
+repeticoes['neg'] = 0
+repeticoes['neutral'] = 0
+repeticoes['boostersINCR'] = 0
+repeticoes['boostersDECR'] = 0
+repeticoes['negatives'] = 0
+
 
 boosters = {}
 for boost in open('booster.txt','r', encoding='utf-8'):
@@ -34,8 +43,10 @@ with open('SentiLex-lem-PT02_copy.txt', 'r', encoding='utf-8') as file:
 
 def preprocess_text(text):
     global max_key_length
+
     if isinstance(text, list):  # Verifica se text é uma lista
         # Se for uma lista, junte os elementos em uma única string
+        print("true")
         text = ' '.join(text)
 
     # Lowercase the text
@@ -60,7 +71,7 @@ def preprocess_text(text):
 
     lemmatized_textSplit = lemmatized_text.split()
     # Check for each key in the sentilex dictionary in the lemmatized text
-    # print("Lemmas_deps:\n", lemmas_deps )
+    print("Lemmas_deps:\n", lemmas_deps )
     # print("\n\nLemmatized_textSplit:\n", lemmatized_textSplit)
     len_lemmas = len(lemmas_deps)
     substitutes = {}
@@ -98,6 +109,7 @@ def preprocess_text(text):
     return lemmas_deps
 
 def calculate_sentiment(lemmas):
+    global repeticoes
     texto = ""
     sentiment = 0
     multiplier = 1
@@ -125,26 +137,33 @@ def calculate_sentiment(lemmas):
 
             if(polarity > 0):
                 texto += f"<pos>{lemma[0]}</pos> "
+                repeticoes['pos'] += 1
             elif(polarity < 0):
                 texto += f"<neg>{lemma[0]}</neg> "
+                repeticoes['neg'] += 1
             else:
                 texto += f"<neutral>{lemma[0]}</neutral> "
+                repeticoes['neutral'] += 1
             
         elif lemma[0] in boosters:
             if multiplier == -1:
                 if boosters[lemma[0]] == 'INCR':
                     multiplier = -1.3
                     texto += f"<boostersINCR>{lemma[0]}</boostersINCR> "
+                    repeticoes['boostersINCR'] += 1
                 else:
                     multiplier = -0.7
                     texto += f"<boostersDECR>{lemma[0]}</boostersDECR> "
+                    repeticoes['boostersDECR'] += 1
             else: 
                 if boosters[lemma[0]] == 'INCR':
                     multiplier = 1.3
                     texto += f"<boostersINCR>{lemma[0]}</boostersINCR> "
+                    repeticoes['boostersINCR'] += 1
                 else:
                     multiplier = 0.7
                     texto += f"<boostersDECR>{lemma[0]}</boostersDECR> "
+                    repeticoes['boostersDECR'] += 1
 
 
         elif lemma[0] in negatives:
@@ -154,6 +173,7 @@ def calculate_sentiment(lemmas):
                 multiplier = -1 # fix me
             
             texto += f"<negatives>{lemma[0]}</negatives> "
+            repeticoes['negatives'] += 1
 
         else:
             texto += lemma[0] + " "
@@ -162,8 +182,15 @@ def calculate_sentiment(lemmas):
 
 
 def divideTexto(text):
+    if text == "":
+        del(text[-1])
     sentences = re.split(r'[.!?]\s', text)
+    if sentences and sentences[-1] == "":
+        sentences.pop()
+
     return sentences
+
+
 
 
 def dividir_por_capitulos(texto):
@@ -213,27 +240,47 @@ def HarryPotter():
     print(f"Sentimento Global: {sentimentoGlobal}")
 
 def textoExemplo():
-    text = """O rapaz que sobreviveu  
+    text = """ Eu adoro jogar à bola com os meus amigos.
 
-O senhor e a senhora Dursley que vivem no número quatro de Privet Drive sempre afirmaram, para quem os quisesse ouvir, ser o mais normal que é possível ser-se, graças a Deus.
-Eram as últimas pessoas que alguém esperaria ver envolvidas em algo estranho ou misterioso porque, pura e simplesmente, não acreditavam nesses disparates.  
+    O meu cão é muito brincalhão e adora correr no parque.
+
+    O tempo está muito mau e não consigo sair de casa.
+
+    O meu irmão é muito chato e não me deixa brincar com os meus brinquedos.
+
+    A minha mãe fez um bolo delicioso e eu comi uma fatia inteira.
+
+    O meu pai está sempre a trabalhar e não tem tempo para brincar comigo.
+
+    A minha avó é muito simpática e faz-me sempre festinhas na cabeça.
+
+    O meu gato é muito preguiçoso e passa o dia a dormir no sofá.
+
+    O presidente nunca volta com o palavra atrás na TV.
+
+    O João é um rapaz muito simpático e ajuda sempre os outros e não para de tocar na minha campainha.
 """
     
     textoFinal = "" 
     sentimentoGlobal = 0
     textoDividido = divideTexto(text)
+    i=1
     for sentences in textoDividido:
+        textoFinal += f"\nFrase {i}\n"
+        i+=1
         lemmas = preprocess_text(sentences)
 
         (sentimentoFrase,textoFrase) = calculate_sentiment(lemmas)
         sentimentoGlobal += sentimentoFrase
-        textoFinal += textoFrase
+        textoFinal += f"\n {textoFrase} \n"
     print(textoFinal)
     print(sentimentoGlobal)
 
 def main():
     #textoExemplo()
     HarryPotter()
+    print(repeticoes)
+
 
 if __name__ == "__main__":
     main()
