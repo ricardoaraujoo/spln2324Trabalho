@@ -49,7 +49,7 @@ def preprocess_text(text):
 
     lemmas_deps = []
     lemmatized_text = ''
-    print("DOC:", doc)
+
     for token in doc:
         if not (token.is_punct or token.is_space):
             lemma = token.lemma_.lower()
@@ -154,7 +154,6 @@ def calculate_sentiment(lemmas):
             
             texto += f"<negatives>{lemma[0]}</negatives> "
 
-
         else:
             texto += lemma[0] + " "
 
@@ -196,20 +195,28 @@ def HarryPotter():
     sentimentoGlobal = 0
     textoFinal= ""
     for i, capitulo in enumerate(textoCapitulos, start=1):
-        lemmas = preprocess_text(capitulo)
-        sentimento_capitulo = calculate_sentiment(lemmas)
-        print(f"Sentimento do Capítulo {i}: {sentimento_capitulo}")
-        (sentimentoTEXTO,texto) = sentimento_capitulo
-        sentimentoGlobal += sentimentoTEXTO
-        textoFinal += texto
+        print(f"\nCapítulo {i}\n")
+        textoFinal += f"\nCapítulo {i}\n"
+        sentimentoInterno = 0
+        for sentence in divideTexto(capitulo):
+            
+            lemmas = preprocess_text(sentence)
+            sentimento_capitulo = calculate_sentiment(lemmas)
+            (sentimentoTEXTO,texto) = sentimento_capitulo
+            sentimentoInterno += sentimentoTEXTO
+            textoFinal += f"{texto}\n"
+        print(f"\nCapítulo {i}  {sentimentoInterno}\n")
     # Exibição do sentimento global
+        sentimentoGlobal += sentimentoInterno
+    print("Texto global:", textoFinal)
     print(f"Sentimento Global: {sentimentoGlobal}")
-    print("Texto global:", texto)
 
 def textoExemplo():
-    text = """Que dia maravilhoso! O sol está brilhando, o céu está azul e estou rodeado de pessoas queridas. 
-        Sinto-me extremamente feliz e grato por tudo o que tenho e correr a toque de caixa LOL. 
-        Este é o tipo de dia que me faz acreditar no poder da felicidade e na beleza da vida e doido varrido elea."""
+    text = """O rapaz que sobreviveu  
+
+O senhor e a senhora Dursley que vivem no número quatro de Privet Drive sempre afirmaram, para quem os quisesse ouvir, ser o mais normal que é possível ser-se, graças a Deus.
+Eram as últimas pessoas que alguém esperaria ver envolvidas em algo estranho ou misterioso porque, pura e simplesmente, não acreditavam nesses disparates.  
+"""
     
     textoFinal = "" 
     sentimentoGlobal = 0

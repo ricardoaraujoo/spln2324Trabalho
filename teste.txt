@@ -1,0 +1,20 @@
+Lemmas_deps:
+ [('o', 'det'), ('rapaz', 'nsubj'), ('que', 'nsubj'), ('sobreviver', 'acl:relcl'), ('o', 'det'), ('senhor', 'obj'), ('e', 'cc'), ('o', 'det'), ('senhora', 'conj'), ('dursley', 'appos'), ('que', 'nsubj'), ('viver', 'acl:relcl'), ('em o', 'case'), ('número', 'obl'), ('quatro', 'nummod'), ('de', 'case'), ('privet', 'nmod'), ('drive', 'nmod'), ('sempre', 'advmod'), ('afirmar', 'ROOT'), ('para', 'case'), ('quem', 'mark'), ('eles', 'obj'), ('quisesse', 'ccomp'), ('ouvir', 'xcomp'), ('ser', 'cop'), ('o', 'det'), ('mais', 'advmod'), ('normal', 'conj'), ('que', 'mark'), ('ser', 'cop'), ('possível', 'csubj'), ('ser se', 'csubj'), ('graças', 'case'), ('a', 'fixed'), ('deus', 'obl')]
+
+
+Lemmatized_textSplit:
+ ['o', 'rapaz', 'que', 'sobreviver', 'o', 'senhor', 'e', 'o', 'senhora', 'dursley', 'que', 'viver', 'em', 'o', 'número', 'quatro', 'de', 'privet', 'drive', 'sempre', 'afirmar', 'para', 'quem', 'eles', 'quisesse', 'ouvir', 'ser', 'o', 'mais', 'normal', 'que', 'ser', 'possível', 'ser', 'se', 'graças', 'a', 'deus']
+Lemmas_deps:
+ [('ser', 'cop'), ('o', 'det'), ('último', 'amod'), ('pessoa', 'ROOT'), ('que', 'mark'), ('alguém', 'nsubj'), ('esperar', 'acl:relcl'), ('ver', 'xcomp'), ('envolver', 'xcomp'), ('em', 'case'), ('algo', 'obj'), ('estranho', 'amod'), ('ou', 'cc'), ('misterioso', 'conj'), ('porque', 'mark'), ('puro', 'advmod'), ('e', 'cc'), ('simplesmente', 'conj'), ('não', 'advmod'), ('acreditar', 'advcl'), ('em esse', 'case'), ('disparate', 'obl')]
+
+
+Lemmatized_textSplit:
+ ['ser', 'o', 'último', 'pessoa', 'que', 'alguém', 'esperar', 'ver', 'envolver', 'em', 'algo', 'estranho', 'ou', 'misterioso', 'porque', 'puro', 'e', 'simplesmente', 'não', 'acreditar', 'em', 'esse', 'disparate']
+Lemmas_deps:
+ []
+
+
+Lemmatized_textSplit:
+ []
+o rapaz que sobreviver o senhor e o senhora dursley que <pos>viver</pos> em o número quatro de privet drive sempre afirmar para quem eles quisesse <neutral>ouvir</neutral> <pos>ser</pos> o mais <pos>normal</pos> que <pos>ser</pos> possível ser se graças a deus <pos>ser</pos> o último pessoa que alguém esperar ver envolver em <boostersDECR>algo</boostersDECR> <neg>estranho</neg> ou <neutral>misterioso</neutral> porque <pos>puro</pos> e simplesmente <negatives>não</negatives> <neutral>acreditar</neutral> em esse <neg>disparate</neg> 
+4.3
