@@ -45,43 +45,46 @@ def preprocess_text(text):
         for entity in doc.ents:
             retokenizer.merge(entity)
 
-    # Lemmatize the words, get their dependency relations, and exclude punctuation
-    lemmas_deps = [(token.lemma_.lower(), token.dep_) for token in doc if not (token.is_punct or token.is_space)]
-    # Convert the lemmatized tokens back into a string
-    lemmatized_text = ' '.join([lemma for lemma, dep in lemmas_deps])
+    lemmas_deps = []
+    lemmatized_text = ''
+
+    for token in doc:
+        if not (token.is_punct or token.is_space):
+            lemma = token.lemma_.lower()
+            dep = token.dep_
+            lemmas_deps.append((lemma, dep))
+            lemmatized_text += lemma + ' '
     lemmatized_textSplit = lemmatized_text.split()
     # Check for each key in the sentilex dictionary in the lemmatized text
     print("Lemmas_deps:", lemmas_deps )
     print("\n\nLemmatized_textSplit:", lemmatized_textSplit)
+    len_lemmas = len(lemmas_deps)
     for key in sentilex:
-        if not any(lemma == key for lemma, dep in lemmas_deps):
-            if ' ' in key: 
-                key_lemmas = key.split()
-                for i in range(len(lemmatized_textSplit) - len(key_lemmas) + 1):
-                    if key_lemmas == lemmatized_textSplit[i:i+len(key_lemmas)]:
-                        
-                        index = None
-                        for i, (lemma, dep) in enumerate(lemmas_deps):
-                            print("IndexLOLOLOL:", lemma)
-                            if lemma == key_lemmas[0]:
+        key_lemmas = key.split()
+        key_length = len(key_lemmas)
 
-                                index = i
-                                
-                                break
-                                
-                        # Replace the lemma with the key
-                        print("Key lemmas:", key_lemmas)
-                        print("Index:", index)
-                        lemmas_deps[index] = (key, lemmas_deps[index][1])
-                        
-                        #print("key LENGTH:", len(key_lemmas))
+        found = False
+        for i in range(len_lemmas - key_length + 1):
+            for j in range(key_length, 0, -1):
+                lemmas_slice = ' '.join(lemma for lemma, _ in lemmas_deps[i:i+j])
+                if lemmas_slice == key:
+                    found = True
+                    index = i
+                    break
 
-                        # Remove the next n-1 lemmas, where n is the number of words in the key
-                        #print("Lemmas_deps:", lemmas_deps)
-                        #print("Lemmas_deps length:", len(lemmas_deps))
-                        for i in range(len(key_lemmas) - 1, 0, -1):
-                            if index + i < len(lemmas_deps):
-                                del lemmas_deps[index + i]
+        if found:
+            # Replace the lemma with the key
+            print("Key lemmas:", key_lemmas)
+            print("Index:", index)
+            lemmas_deps[index] = (key, lemmas_deps[index][1])
+            
+            #print("key LENGTH:", len(key_lemmas
+            # Remove the next n-1 lemmas, where n is the number of words in the key
+            #print("Lemmas_deps:", lemmas_deps)
+            #print("Lemmas_deps length:", len(lemmas_deps))
+            for i in range(len(key_lemmas) - 1, 0, -1):
+                if index + i < len(lemmas_deps):
+                    del lemmas_deps[index + i]
 
     #print(lemmas_deps)
 
@@ -126,18 +129,18 @@ def calculate_sentiment(lemmas):
                 texto += f"<boosters>{lemma[0]}</boosters> "
             else: 
                 if boosters[lemma[0]] == 'INCR':
-                    multiplier = 2
+                    multiplier = 1.3
                     texto += f"<boostersINCR>{lemma[0]}</boostersINCR> "
                 else:
-                    multiplier = 0.5
+                    multiplier = 0.7
                     texto += f"<boostersDECR>{lemma[0]}</boostersDECR> "
 
 
         elif lemma[0] in negatives:
-            if multiplier == 2:
+            if multiplier == 1.3 or multiplier == 0.7:
                 multiplier = 1
             else: 
-                multiplier = -1
+                multiplier = -1 # fix me
             
             texto += f"<negatives>{lemma[0]}</negatives> "
 
@@ -184,20 +187,19 @@ def HarryPotter():
     sentimentoGlobal = 0
     textoFinal= ""
     for i, capitulo in enumerate(textoCapitulos, start=1):
-        
-        textoDividido = divideTexto(capitulo)
-        
-        for sentence in textoDividido:
-            lemmas = preprocess_text(sentence)
-            (sentimentoTEXTO,texto) = calculate_sentiment(lemmas)
-            print(f"Sentimento do Capítulo {i}: {sentimentoTEXTO} e {texto}\n")
-            sentimentoGlobal += sentimentoTEXTO
-            textoFinal += texto
+        lemmas = preprocess_text(capitulo)
+        sentimento_capitulo = calculate_sentiment(lemmas)
+        print(f"Sentimento do Capítulo {i}: {sentimento_capitulo}")
+        (sentimentoTEXTO,texto) = sentimento_capitulo
+        sentimentoGlobal += sentimentoTEXTO
+        textoFinal += texto
     # Exibição do sentimento global
-    print(f"Sentimento Global: {sentimentoGlobal}\n")
+    print(f"Sentimento Global: {sentimentoGlobal}")
+    print("Texto global:", texto)
 
 def textoExemplo():
-    text = """Que dia maravilhoso! O sol está brilhando, o céu está azul e estou apagar se rodeado de pessoas queridas."""
+    text = """Hagrid encostou-se à mesa.
+           Desceram uma ravina subterrânea e Harry encostou-se a um dos lados para tentar ver o que havia lá em baixo na escuridão do fundo"""
     
     textoFinal = "" 
     sentimentoGlobal = 0

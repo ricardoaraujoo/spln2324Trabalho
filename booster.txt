@@ -48,7 +48,7 @@ parcialmente DECR
 pouco DECR
 pouquinho DECR
 quase DECR
-so o necessario DECR
+só o necessario DECR
 superficialmente DECR
 tantinho DECR
 tipo DECR

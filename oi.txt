@@ -1,0 +1,145 @@
+Lemmas_deps: [('que', 'det'), ('dia', 'ROOT'), ('maravilhoso', 'amod')]
+
+
+Lemmatized_textSplit: ['que', 'dia', 'maravilhoso']
+IndexLOLOLOL: que
+IndexLOLOLOL: dia
+IndexLOLOLOL: maravilhoso
+Key lemmas: ['maravilhoso']
+Index: 2
+Lemmas_deps: [('o', 'det'), ('sol', 'nsubj'), ('estar', 'aux'), ('brilhar', 'ROOT'), ('o', 'det'), ('céu', 'nsubj'), ('estar', 'cop'), ('azul', 'conj'), ('e', 'cc'), ('estar', 'cop'), ('rodeado', 'conj'), ('de', 'case'), ('pessoa', 'obl'), ('querer', 'acl')]
+
+
+Lemmatized_textSplit: ['o', 'sol', 'estar', 'brilhar', 'o', 'céu', 'estar', 'azul', 'e', 'estar', 'rodeado', 'de', 'pessoa', 'querer']
+IndexLOLOLOL: o
+IndexLOLOLOL: sol
+IndexLOLOLOL: estar
+IndexLOLOLOL: brilhar
+Key lemmas: ['brilhar']
+Index: 3
+IndexLOLOLOL: o
+IndexLOLOLOL: sol
+IndexLOLOLOL: estar
+IndexLOLOLOL: brilhar
+IndexLOLOLOL: o
+IndexLOLOLOL: céu
+IndexLOLOLOL: estar
+IndexLOLOLOL: azul
+IndexLOLOLOL: e
+IndexLOLOLOL: estar
+IndexLOLOLOL: rodeado
+IndexLOLOLOL: de
+IndexLOLOLOL: pessoa
+IndexLOLOLOL: querer
+Key lemmas: ['querer']
+Index: 13
+Lemmas_deps: [('sinto-me', 'ROOT'), ('extremamente', 'advmod'), ('feliz', 'xcomp'), ('e', 'cc'), ('grato', 'conj'), ('por', 'mark'), ('tudo', 'obj'), ('o', 'fixed'), ('que', 'fixed'), ('ter', 'advcl'), ('e', 'cc'), ('correr', 'conj'), ('a', 'case'), ('toque', 'obl'), ('de', 'case'), ('caixa', 'nmod'), ('lol', 'flat:name')]
+
+
+Lemmatized_textSplit: ['sinto-me', 'extremamente', 'feliz', 'e', 'grato', 'por', 'tudo', 'o', 'que', 'ter', 'e', 'correr', 'a', 'toque', 'de', 'caixa', 'lol']
+IndexLOLOLOL: sinto-me
+IndexLOLOLOL: extremamente
+IndexLOLOLOL: feliz
+IndexLOLOLOL: e
+IndexLOLOLOL: grato
+IndexLOLOLOL: por
+IndexLOLOLOL: tudo
+IndexLOLOLOL: o
+IndexLOLOLOL: que
+IndexLOLOLOL: ter
+IndexLOLOLOL: e
+IndexLOLOLOL: correr
+Key lemmas: ['correr', 'a', 'toque', 'de', 'caixa']
+Index: 11
+IndexLOLOLOL: sinto-me
+IndexLOLOLOL: extremamente
+IndexLOLOLOL: feliz
+Key lemmas: ['feliz']
+Index: 2
+IndexLOLOLOL: sinto-me
+IndexLOLOLOL: extremamente
+IndexLOLOLOL: feliz
+IndexLOLOLOL: e
+IndexLOLOLOL: grato
+Key lemmas: ['grato']
+Index: 4
+Lemmas_deps: [('este', 'nsubj'), ('ser', 'cop'), ('o', 'det'), ('tipo', 'ROOT'), ('de', 'case'), ('dia', 'nmod'), ('que', 'nsubj'), ('eu', 'obj'), ('fazer', 'acl:relcl'), ('acreditar', 'xcomp'), ('em o', 'case'), ('poder', 'obl'), ('de o', 'case'), ('felicidade', 'nmod'), ('e', 'cc'), ('em o', 'case'), ('beleza', 'conj'), ('de o', 'case'), ('vida', 'nmod'), ('e', 'cc'), ('doer', 'conj'), ('varrido', 'xcomp'), ('e.', 'ROOT')]
+
+
+Lemmatized_textSplit: ['este', 'ser', 'o', 'tipo', 'de', 'dia', 'que', 'eu', 'fazer', 'acreditar', 'em', 'o', 'poder', 'de', 'o', 'felicidade', 'e', 'em', 'o', 'beleza', 'de', 'o', 'vida', 'e', 'doer', 'varrido', 'e.']
+IndexLOLOLOL: este
+IndexLOLOLOL: ser
+IndexLOLOLOL: o
+IndexLOLOLOL: tipo
+IndexLOLOLOL: de
+IndexLOLOLOL: dia
+IndexLOLOLOL: que
+IndexLOLOLOL: eu
+IndexLOLOLOL: fazer
+IndexLOLOLOL: acreditar
+Key lemmas: ['acreditar']
+Index: 9
+IndexLOLOLOL: este
+IndexLOLOLOL: ser
+IndexLOLOLOL: o
+IndexLOLOLOL: tipo
+IndexLOLOLOL: de
+IndexLOLOLOL: dia
+IndexLOLOLOL: que
+IndexLOLOLOL: eu
+IndexLOLOLOL: fazer
+IndexLOLOLOL: acreditar
+IndexLOLOLOL: em o
+IndexLOLOLOL: poder
+IndexLOLOLOL: de o
+IndexLOLOLOL: felicidade
+IndexLOLOLOL: e
+IndexLOLOLOL: em o
+IndexLOLOLOL: beleza
+Key lemmas: ['beleza']
+Index: 16
+IndexLOLOLOL: este
+IndexLOLOLOL: ser
+IndexLOLOLOL: o
+IndexLOLOLOL: tipo
+IndexLOLOLOL: de
+IndexLOLOLOL: dia
+IndexLOLOLOL: que
+IndexLOLOLOL: eu
+IndexLOLOLOL: fazer
+IndexLOLOLOL: acreditar
+IndexLOLOLOL: em o
+IndexLOLOLOL: poder
+IndexLOLOLOL: de o
+IndexLOLOLOL: felicidade
+IndexLOLOLOL: e
+IndexLOLOLOL: em o
+IndexLOLOLOL: beleza
+IndexLOLOLOL: de o
+IndexLOLOLOL: vida
+IndexLOLOLOL: e
+IndexLOLOLOL: doer
+Key lemmas: ['doer', 'varrido']
+Index: 20
+IndexLOLOLOL: este
+IndexLOLOLOL: ser
+IndexLOLOLOL: o
+IndexLOLOLOL: tipo
+IndexLOLOLOL: de
+IndexLOLOLOL: dia
+IndexLOLOLOL: que
+IndexLOLOLOL: eu
+IndexLOLOLOL: fazer
+IndexLOLOLOL: acreditar
+IndexLOLOLOL: em o
+IndexLOLOLOL: poder
+IndexLOLOLOL: de o
+IndexLOLOLOL: felicidade
+Key lemmas: ['felicidade']
+Index: 13
+IndexLOLOLOL: este
+IndexLOLOLOL: ser
+Key lemmas: ['ser']
+Index: 1
+que dia <pos>maravilhoso</pos> o sol estar <pos>brilhar</pos> o céu estar azul e estar rodeado de pessoa <pos>querer</pos> sinto-me <boostersINCR>extremamente</boostersINCR> <pos>feliz</pos> e <pos>grato</pos> por tudo o que ter e <neg>correr a toque de caixa</neg> lol este <pos>ser</pos> o <boostersDECR>tipo</boostersDECR> de dia que eu fazer <neutral>acreditar</neutral> em o poder de o <pos>felicidade</pos> e em o <pos>beleza</pos> de o vida e <neg>doer varrido</neg> e. 
+7.0
