@@ -1,0 +1,3 @@
+[submodule "vaderSentiment"]
+	path = vaderSentiment
+	url = git@github.com:cjhutto/vaderSentiment.git
