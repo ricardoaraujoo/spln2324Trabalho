@@ -5,6 +5,7 @@ import spacy
 import nltk
 import os
 import re
+import matplotlib.pyplot as plt
 
 # Load Portuguese language model
 nlp = spacy.load("pt_core_news_lg")
@@ -222,6 +223,7 @@ def HarryPotter():
     # Cálculo do sentimento para cada capítulo
     sentimentoGlobal = 0
     textoFinal= ""
+    sentimento_por_capitulo = []
     for i, capitulo in enumerate(textoCapitulos, start=1):
         # print(f"\nCapítulo {i}\n")
         textoFinal += f"\nCapítulo {i}\n"
@@ -234,8 +236,27 @@ def HarryPotter():
             sentimentoInterno += sentimentoTEXTO
             textoFinal += f"{texto}\n"
         print(f"\nCapítulo {i}  {sentimentoInterno}\n")
+        sentimento_por_capitulo.append(sentimentoInterno)
     # Exibição do sentimento global
         sentimentoGlobal += sentimentoInterno
+
+        
+    # Abrir o arquivo para escrita
+    with open('histograma.png', 'wb') as ficheiro:
+        # Criação do histograma
+        plt.figure(figsize=(10, 6))
+        plt.bar(range(1, len(sentimento_por_capitulo) + 1), sentimento_por_capitulo, color='skyblue')
+        plt.xlabel('Capítulo')
+        plt.ylabel('Sentimento')
+        plt.title('Sentimento por Capítulo em Harry Potter')
+        plt.xticks(range(1, len(sentimento_por_capitulo) + 1))  # Definindo os rótulos dos ticks no eixo X
+        plt.yticks(range(-60, int(max(sentimento_por_capitulo)) + 1, 10))  # Definindo os rótulos dos ticks no eixo Y
+        plt.grid(True)
+        plt.savefig(ficheiro)  # Salvar o gráfico no ficheiro
+        plt.show()
+
+
+    
     print("Texto global:", textoFinal)
     print(f"Sentimento Global: {sentimentoGlobal}")
 
