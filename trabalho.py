@@ -1,3 +1,4 @@
+from telnetlib import PRAGMA_HEARTBEAT
 import spacy
 import nltk
 import os
@@ -46,34 +47,43 @@ def preprocess_text(text):
 
     # Lemmatize the words, get their dependency relations, and exclude punctuation
     lemmas_deps = [(token.lemma_.lower(), token.dep_) for token in doc if not (token.is_punct or token.is_space)]
-    print("OG: ",lemmas_deps)
     # Convert the lemmatized tokens back into a string
     lemmatized_text = ' '.join([lemma for lemma, dep in lemmas_deps])
     lemmatized_textSplit = lemmatized_text.split()
     # Check for each key in the sentilex dictionary in the lemmatized text
+    print("Lemmas_deps:", lemmas_deps )
+    print("\n\nLemmatized_textSplit:", lemmatized_textSplit)
     for key in sentilex:
-        if ' ' in key: 
-            key_lemmas = key.split()
-            for i in range(len(lemmatized_textSplit) - len(key_lemmas) + 1):
-                if key_lemmas == lemmatized_textSplit[i:i+len(key_lemmas)]:
-            
-                    # Replace the lemma with the key
-                    print("Key lemmas:", key_lemmas)
-                    print("Lemmatized text:", lemmatized_textSplit.index(key_lemmas[0]))
-                    index = lemmatized_textSplit.index(key_lemmas[0])
-                    print("Index:", index)
-                    lemmas_deps[index] = (key, lemmas_deps[index][1])
-                    
-                    print("key LENGTH:", len(key_lemmas))
+        if not any(lemma == key for lemma, dep in lemmas_deps):
+            if ' ' in key: 
+                key_lemmas = key.split()
+                for i in range(len(lemmatized_textSplit) - len(key_lemmas) + 1):
+                    if key_lemmas == lemmatized_textSplit[i:i+len(key_lemmas)]:
+                        
+                        index = None
+                        for i, (lemma, dep) in enumerate(lemmas_deps):
+                            print("IndexLOLOLOL:", lemma)
+                            if lemma == key_lemmas[0]:
 
-                    # Remove the next n-1 lemmas, where n is the number of words in the key
-                    print("Lemmas_deps:", lemmas_deps)
-                    print("Lemmas_deps length:", len(lemmas_deps))
-                    for i in range(len(key_lemmas) - 1, 0, -1):
-                        if index + i < len(lemmas_deps):
-                            del lemmas_deps[index + i]
+                                index = i
+                                
+                                break
+                                
+                        # Replace the lemma with the key
+                        print("Key lemmas:", key_lemmas)
+                        print("Index:", index)
+                        lemmas_deps[index] = (key, lemmas_deps[index][1])
+                        
+                        #print("key LENGTH:", len(key_lemmas))
 
-    print(lemmas_deps)
+                        # Remove the next n-1 lemmas, where n is the number of words in the key
+                        #print("Lemmas_deps:", lemmas_deps)
+                        #print("Lemmas_deps length:", len(lemmas_deps))
+                        for i in range(len(key_lemmas) - 1, 0, -1):
+                            if index + i < len(lemmas_deps):
+                                del lemmas_deps[index + i]
+
+    #print(lemmas_deps)
 
     return lemmas_deps
 
@@ -140,7 +150,6 @@ def calculate_sentiment(lemmas):
 
 def divideTexto(text):
     sentences = re.split(r'[.!?]\s', text)
-    print("Sentences:", sentences)
     return sentences
 
 
@@ -165,7 +174,6 @@ def dividir_por_capitulos(texto):
 
 def HarryPotter():
 
-    
     # Leitura do arquivo e divisão por capítulos
     with open('HP.txt', 'r', encoding='utf-8') as arquivo:
         texto = arquivo.read()
@@ -176,22 +184,22 @@ def HarryPotter():
     sentimentoGlobal = 0
     textoFinal= ""
     for i, capitulo in enumerate(textoCapitulos, start=1):
+        
         textoDividido = divideTexto(capitulo)
-        lemmas = preprocess_text(textoDividido)
-
-        sentimento_capitulo = calculate_sentiment(lemmas)
-        print(f"Sentimento do Capítulo {i}: {sentimento_capitulo}")
-        (sentimentoTEXTO,texto) = sentimento_capitulo
-        sentimentoGlobal += sentimentoTEXTO
-        textoFinal += texto
+        
+        for sentence in textoDividido:
+            lemmas = preprocess_text(sentence)
+            (sentimentoTEXTO,texto) = calculate_sentiment(lemmas)
+            print(f"Sentimento do Capítulo {i}: {sentimentoTEXTO} e {texto}\n")
+            sentimentoGlobal += sentimentoTEXTO
+            textoFinal += texto
     # Exibição do sentimento global
-    print(f"Sentimento Global: {sentimentoGlobal}")
-    print("Texto global:", texto)
+    print(f"Sentimento Global: {sentimentoGlobal}\n")
 
 def textoExemplo():
-    text = """Este é o tipo de dia que me faz acreditar no poder da felicidade e na beleza da vida e doido varrido e."""
+    text = """Que dia maravilhoso! O sol está brilhando, o céu está azul e estou apagar se rodeado de pessoas queridas."""
     
-    textoFinal = ""
+    textoFinal = "" 
     sentimentoGlobal = 0
     textoDividido = divideTexto(text)
     for sentences in textoDividido:
@@ -204,8 +212,8 @@ def textoExemplo():
     print(sentimentoGlobal)
 
 def main():
-    textoExemplo()
-    #HarryPotter()
+    #textoExemplo()
+    HarryPotter()
 
 if __name__ == "__main__":
     main()
