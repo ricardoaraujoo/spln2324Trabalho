@@ -1,4 +1,5 @@
 from telnetlib import PRAGMA_HEARTBEAT
+from numpy import double
 import spacy
 import nltk
 import os
@@ -26,9 +27,9 @@ with open('SentiLex-lem-PT02_copy.txt', 'r', encoding='utf-8') as file:
             word = fields[0].split('.')[0]
             polarities = [field.split('=')[1] for field in fields if field.startswith('POL')]
             if len(polarities) == 1:
-                sentilex[word] = int(polarities[0])
+                sentilex[word] = float(polarities[0])
             elif len(polarities) == 2:
-                sentilex[word] = tuple(map(int, polarities))
+                sentilex[word] = tuple(map(float, polarities))
 
 
 def preprocess_text(text):
@@ -59,8 +60,8 @@ def preprocess_text(text):
 
     lemmatized_textSplit = lemmatized_text.split()
     # Check for each key in the sentilex dictionary in the lemmatized text
-    print("Lemmas_deps:\n", lemmas_deps )
-    print("\n\nLemmatized_textSplit:\n", lemmatized_textSplit)
+    # print("Lemmas_deps:\n", lemmas_deps )
+    # print("\n\nLemmatized_textSplit:\n", lemmatized_textSplit)
     len_lemmas = len(lemmas_deps)
     substitutes = {}
     found = False
@@ -82,7 +83,7 @@ def preprocess_text(text):
             # Replace the lemma with the key
     
     for lemmas_slice, index in substitutes.items():
-        print("Index:", index,"Lemmas_slice ACEITADA DELETE:", lemmas_slice)
+        # print("Index:", index,"Lemmas_slice ACEITADA DELETE:", lemmas_slice)
 
         lemmas_length = len(lemmas_slice.split())
         # Remove the next n-1 lemmas, where n is the number of words in the key
@@ -109,12 +110,12 @@ def calculate_sentiment(lemmas):
             if type(sentilex[lemma[0]]) == tuple:
                 if lemma[1] == 'obj' or lemma[1] == "dobj":
                     #print("v1",sentilex[lemma[0]][1].split('=')[1])
-                    polarity = int(sentilex[lemma[0]][1])
+                    polarity = float(sentilex[lemma[0]][1])
                 else:
                     #print("v3",sentilex[lemma[0]][0].split('=')[1])
-                    polarity = int(sentilex[lemma[0]][0])
+                    polarity = float(sentilex[lemma[0]][0])
             else:
-                polarity = int(sentilex[lemma[0]])
+                polarity = float(sentilex[lemma[0]])
                 #print("v4",sentilex[lemma[0]].split('=')[1])
             
             # Aplica o multiplicador à polaridade
@@ -195,7 +196,7 @@ def HarryPotter():
     sentimentoGlobal = 0
     textoFinal= ""
     for i, capitulo in enumerate(textoCapitulos, start=1):
-        print(f"\nCapítulo {i}\n")
+        # print(f"\nCapítulo {i}\n")
         textoFinal += f"\nCapítulo {i}\n"
         sentimentoInterno = 0
         for sentence in divideTexto(capitulo):
