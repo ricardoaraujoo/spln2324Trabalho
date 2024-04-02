@@ -1,6 +1,7 @@
 from LeIA.leia import SentimentIntensityAnalyzer 
-import matplotlib.pyplot as plt
+from vaderSentiment.vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer as Vader
 
+s_english = Vader()
 s = SentimentIntensityAnalyzer()
 
 def analyze_chapters():
@@ -26,16 +27,18 @@ def analyze_full_book():
     # Imprimir o resultado
     print(f"Resultado do Livro completo:")
     print(result)
+    print()  # Adiciona uma linha em branco para separar os resultados dos capítulos
 
 def analyze_full_book_english():
     # Ler o arquivo de texto
     with open('HP_Eng.txt', 'r', encoding='utf-8') as file:
         text = file.read()
     # Aplicar a análise de sentimento
-    result = s.polarity_scores(text)
+    result = s_english.polarity_scores(text)
     # Imprimir o resultado
     print(f"Resultado do Livro completo em Ingles:")
     print(result)
+    print()  # Adiciona uma linha em branco para separar os resultados dos capítulos
 
 
 def main():
