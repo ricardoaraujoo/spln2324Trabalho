@@ -2,12 +2,9 @@ from telnetlib import PRAGMA_HEARTBEAT
 from joblib import PrintTime
 from numpy import double
 import spacy
-import nltk
-import os
 import re
 import matplotlib.pyplot as plt
 
-# Load Portuguese language model
 nlp = spacy.load("pt_core_news_lg")
 max_key_length = 8
 repeticoes = {}
@@ -23,7 +20,6 @@ boosters = {}
 for boost in open('booster.txt','r', encoding='utf-8'):
     parts = boost.strip().split(' ')
     boosters[' '.join(parts[:-1])] = parts[-1]
-
 
 negatives = []
 for negative in open('negative.txt','r', encoding='utf-8'):
@@ -41,19 +37,15 @@ with open('SentiLex-lem-PT02_copy.txt', 'r', encoding='utf-8') as file:
             elif len(polarities) == 2:
                 sentilex[word] = tuple(map(float, polarities))
 
-
 def preprocess_text(text):
     global max_key_length
 
-    if isinstance(text, list):  # Verifica se text é uma lista
-        # Se for uma lista, junte os elementos em uma única string
+    if isinstance(text, list):
         print("true")
         text = ' '.join(text)
 
-    # Lowercase the text
     text = text.lower()
 
-    # Tokenize the text
     doc = nlp(text)
 
     with doc.retokenize() as retokenizer:
@@ -61,17 +53,13 @@ def preprocess_text(text):
             retokenizer.merge(entity)
 
     lemmas_deps = []
-    lemmatized_text = ''
 
     for token in doc:
         if not (token.is_punct or token.is_space):
             lemma = token.lemma_.lower()
             dep = token.dep_
             lemmas_deps.append((lemma, dep))
-            lemmatized_text += lemma + ' '
 
-    lemmatized_textSplit = lemmatized_text.split()
-    # Check for each key in the sentilex dictionary in the lemmatized text
     # print("\n\nLemmatized_textSplit:\n", lemmatized_textSplit)
     len_lemmas = len(lemmas_deps)
     substitutes = {}
@@ -91,13 +79,11 @@ def preprocess_text(text):
             substitutes[lemmas_slice] = (index)
             lemmas_deps[index] = (lemmas_slice, lemmas_deps[index][1])
             found = False
-            # Replace the lemma with the key
     
     for lemmas_slice, index in substitutes.items():
         # print("Index:", index,"Lemmas_slice ACEITADA DELETE:", lemmas_slice)
 
         lemmas_length = len(lemmas_slice.split())
-        # Remove the next n-1 lemmas, where n is the number of words in the key
         #print("Lemmas_deps:", lemmas_deps)
         #print("Lemmas_deps length:", len(lemmas_deps))
         for i in range(lemmas_length - 1, 0, -1):
@@ -130,7 +116,7 @@ def calculate_sentiment(lemmas):
                 polarity = float(sentilex[lemma[0]])
                 #print("v4",sentilex[lemma[0]].split('=')[1])
             
-            # Aplica o multiplicador à polaridade
+
             sentiment += polarity * multiplier
             #print(lemma[0], "polarity", polarity, "multiplier", multiplier, "sentiment", sentiment)
             multiplier = 1
@@ -170,7 +156,7 @@ def calculate_sentiment(lemmas):
             if multiplier == 1.3 or multiplier == 0.7:
                 multiplier = 1
             else: 
-                multiplier = -1 # fix me
+                multiplier = -1 
             
             texto += f"<negatives>{lemma[0]}</negatives> "
             repeticoes['negatives'] += 1
@@ -213,13 +199,12 @@ def dividir_por_capitulos(texto):
     return [capitulo.split('\n', 1)[1] for capitulo in capitulos]
 
 def HarryPotter():
-    # Leitura do arquivo e divisão por capítulos
+
     with open('HP.txt', 'r', encoding='utf-8') as arquivo:
         texto = arquivo.read()
     
     textoCapitulos = dividir_por_capitulos(texto)
     
-    # Cálculo do sentimento para cada capítulo
     sentimentoGlobal = 0
     textoFinal= ""
     sentimento_por_capitulo = []
@@ -241,16 +226,16 @@ def HarryPotter():
         
     # Abrir o arquivo para escrita
     with open('histograma.png', 'wb') as ficheiro:
-        # Criação do histograma
+
         plt.figure(figsize=(10, 6))
         plt.bar(range(1, len(sentimento_por_capitulo) + 1), sentimento_por_capitulo, color='skyblue')
         plt.xlabel('Capítulo')
         plt.ylabel('Sentimento')
         plt.title('Sentimento por Capítulo em Harry Potter')
-        plt.xticks(range(1, len(sentimento_por_capitulo) + 1))  # Definindo os rótulos dos ticks no eixo X
-        plt.yticks(range(-60, int(max(sentimento_por_capitulo)) + 1, 10))  # Definindo os rótulos dos ticks no eixo Y
+        plt.xticks(range(1, len(sentimento_por_capitulo) + 1))  
+        plt.yticks(range(-60, int(max(sentimento_por_capitulo)) + 1, 10)) 
         plt.grid(True)
-        plt.savefig(ficheiro)  # Salvar o gráfico no ficheiro
+        plt.savefig(ficheiro)  
         plt.show()
 
 
