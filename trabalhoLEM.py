@@ -26,7 +26,7 @@ for negative in open('negative.txt','r', encoding='utf-8'):
     negatives.append(negative.strip())
 
 sentilex = {}
-with open('SentiLex-lem-PT02.txt', 'r', encoding='utf-8') as file:
+with open('SentiLex-lem-PT02_copy.txt', 'r', encoding='utf-8') as file:
     for line in file:
         fields = line.strip().split(';')
         if len(fields) >= 4:
@@ -116,8 +116,6 @@ def calculate_sentiment(lemmas):
                 polarity = float(sentilex[lemma[0]])
                 #print("v4",sentilex[lemma[0]].split('=')[1])
             
-            if polarity == -1:
-                polarity = -0.746
             sentiment += polarity * multiplier
             #print(lemma[0], "polarity", polarity, "multiplier", multiplier, "sentiment", sentiment)
             multiplier = 1
